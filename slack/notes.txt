@@ -1,5 +1,19 @@
+from langchain_openai import AzureChatOpenAI
+from langchain.chains import LLMChain
+from dotenv import find_dotenv, load_dotenv
+from langchain.prompts.chat import (
+    ChatPromptTemplate,
+    SystemMessagePromptTemplate,
+    HumanMessagePromptTemplate,
+)
+
+load_dotenv(find_dotenv())
+
+
+
 chain = LLMChain(llm=chat, prompt=chat_prompt)
     LLMChain is imported using "from langchain.chains import LLMChain"
+        LLMChain is a class and langchain.chains is a module.
     llm=chat
         chat = AzureChatOpenAI(
             deployment_name="gpt-4o-mini",  # must match exactly
@@ -17,6 +31,7 @@ chain = LLMChain(llm=chat, prompt=chat_prompt)
         system_message_prompt AND human_message_prompt are imported using "from langchain.prompts.chat import"
     
         system_message_prompt = SystemMessagePromptTemplate.from_template(template)
+
         template = """
             You are a helpful assistant that drafts an email reply based on an a new email.
             Your goal is to help the user quickly create a perfect email reply.
@@ -24,5 +39,6 @@ chain = LLMChain(llm=chat, prompt=chat_prompt)
             Start your reply by saying: "Hi {name}, here's a draft for your reply:". And then proceed with the reply on a new line.
             Make sure to sign of with {signature}.
             """
+
         human_template = "Here's the email to reply to and consider any other comments from the user for reply as well: {user_input}"
         human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
