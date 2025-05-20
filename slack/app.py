@@ -86,7 +86,8 @@ def slack_events():
     """
     return handler.handle(request)
 
-
 # Run the Flask app
 if __name__ == "__main__":
+    print("Slack Bot User ID:", get_bot_user_id())
     flask_app.run()
+

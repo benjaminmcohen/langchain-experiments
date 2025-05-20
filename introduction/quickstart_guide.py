@@ -1,13 +1,14 @@
 from dotenv import find_dotenv, load_dotenv
-from langchain.llms import OpenAI
-from langchain import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 from langchain.chains import LLMChain
-from langchain.agents import load_tools
 from langchain.agents import initialize_agent
 from langchain.agents import AgentType
-from langchain.agents.load_tools import get_all_tool_names
-from langchain import ConversationChain
-from langchain.chat_models import ChatOpenAI
+from langchain_openai import OpenAI, ChatOpenAI
+from langchain_community.agent_toolkits.load_tools import load_tools, get_all_tool_names
+from langchain.chains import ConversationChain
+
+import os
+api_key = os.environ['OPENAI_API_KEY']
 
 # Load environment variables
 load_dotenv(find_dotenv())
@@ -16,8 +17,8 @@ load_dotenv(find_dotenv())
 # LLMs: Get predictions from a language model
 # --------------------------------------------------------------
 
-llm = OpenAI(model_name="text-davinci-003")
-prompt = "Write a poem about python and ai"
+llm = OpenAI(model_name="gpt-3.5-turbo-instruct")
+prompt = "Write a poem about python, ai and sunlight"
 print(llm(prompt))
 
 

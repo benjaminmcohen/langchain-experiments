@@ -1,8 +1,8 @@
-from langchain.document_loaders import YoutubeLoader
+from langchain_community.document_loaders import YoutubeLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.vectorstores import FAISS
-from langchain.chat_models import ChatOpenAI
+from langchain_openai import AzureOpenAIEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_openai import AzureChatOpenAI
 from langchain.chains import LLMChain
 from dotenv import find_dotenv, load_dotenv
 from langchain.prompts.chat import (
@@ -13,12 +13,20 @@ from langchain.prompts.chat import (
 import textwrap
 
 load_dotenv(find_dotenv())
-embeddings = OpenAIEmbeddings()
+embeddings = AzureOpenAIEmbeddings(
+    deployment="text-embedding-ada-002",
+    model="text-embedding-ada-002",
+    chunk_size=1000,  # 🔧 explicitly set this to avoid the KeyError
+    openai_api_version="2025-01-01-preview"
+)
 
 
 def create_db_from_youtube_video_url(video_url):
     loader = YoutubeLoader.from_youtube_url(video_url)
     transcript = loader.load()
+    if not transcript:
+        print("⚠️ Transcript is empty.")
+        return None
 
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=100)
     docs = text_splitter.split_documents(transcript)
@@ -31,7 +39,7 @@ def get_response_from_query(db, query, k=4):
     docs = db.similarity_search(query, k=k)
     docs_page_content = " ".join([d.page_content for d in docs])
 
-    chat = ChatOpenAI(model_name="gpt-3.5-turbo-16k", temperature=0.2)
+    chat = AzureChatOpenAI(model_name="gpt-4o-mini", temperature=0.2)
 
     # Template to use for the system message prompt
     template = """
@@ -62,8 +70,10 @@ def get_response_from_query(db, query, k=4):
 
 
 # Example usage:
-video_url = "https://www.youtube.com/watch?v=th4j9JxWGko"
+video_url = "https://www.youtube.com/watch?v=th4j9JxWGko"  # First video ever uploaded (has captions)
 db = create_db_from_youtube_video_url(video_url)
+
+
 
 query = "what is this video about?"
 response, docs = get_response_from_query(db, query)
