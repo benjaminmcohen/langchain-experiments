@@ -16,14 +16,32 @@ from functions import draft_email  # ✅ assuming this exists and is valid
 load_dotenv(find_dotenv())
 
 # Set up Slack app with bot token and signing secret
-app = App(
+slack_app = App(
     token=os.environ.get("SLACK_BOT_TOKEN"),
     signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
 )
 
 # Set up Flask app and Slack handler
 flask_app = Flask(__name__)
-handler = SlackRequestHandler(app)
+handler = SlackRequestHandler(slack_app)
+
+@slack_app.event("app_mention")
+
+def handle_app_mention(body, say, logger):
+    try:
+        event = body.get("event", {})
+        user_text = event.get("text", "")
+        
+        # Strip out the bot mention (e.g., "<@U12345> Hello")
+        cleaned_text = user_text.split(">", 1)[-1].strip()
+        logger.info(f"User said: {cleaned_text}")
+
+        response = draft_email(cleaned_text)
+        say(response)
+    except Exception as e:
+        logger.error(f"Error handling app_mention: {e}")
+        say("Sorry, I ran into a problem handling your request.")
+
 
 # Optional: Log all incoming requests (very helpful for debugging)
 @flask_app.before_request
