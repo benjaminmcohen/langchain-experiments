@@ -125,6 +125,7 @@ def slack_events():
     Handles the Slack URL verification and passes normal events to SlackRequestHandler.
     """
     data = request.get_json()
+    logging.info(f"Incoming Slack event: {data}")
 
     if data and data.get("type") == "url_verification":
         return {"challenge": data.get("challenge")}
@@ -134,7 +135,6 @@ def slack_events():
         abort(403)
 
     return handler.handle(request)
-    logging.info(f"Incoming Slack event: {data}")
 
 
 
