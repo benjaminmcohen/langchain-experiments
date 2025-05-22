@@ -73,7 +73,12 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
-      
+      - name: Ensure directory structure expected by --chdir slack
+        run: |
+          mkdir -p site
+          mv slack requirements.txt startup.txt app.yaml site/
+          mv site/* .
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -87,4 +92,3 @@ jobs:
         with:
           app-name: 'slack-gpt-app-163'
           slot-name: 'Production'
-          
