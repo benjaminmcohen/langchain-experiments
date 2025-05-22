@@ -122,13 +122,21 @@ def handle_mentions(body, say):
 def slack_events():
     """
     Route for handling Slack events.
-    This function passes the incoming HTTP request to the SlackRequestHandler for processing.
-
-    Returns:
-        Response: The result of handling the request.
+    Handles the Slack URL verification and passes normal events to SlackRequestHandler.
     """
+    data = request.get_json()
+
+    if data and data.get("type") == "url_verification":
+        return {"challenge": data.get("challenge")}
+
+    # All other requests must be verified
+    if not verify_slack_request():
+        abort(403)
 
     return handler.handle(request)
+    logging.info(f"Incoming Slack event: {data}")
+
+
 
 
 # Run the Flask app
