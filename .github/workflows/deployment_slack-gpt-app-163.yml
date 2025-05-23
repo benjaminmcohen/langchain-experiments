@@ -73,13 +73,6 @@ jobs:
           mv slack requirements.txt startup.txt site/
           mv site/* .
 
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_24bd4fd5-f0bf-45ac-bfb0-c8115e4a8c20 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_75831955-a295-4a5c-bb24-aa3783860925 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_854b6002-5bd7-47aa-a4c5-e091b8d13908 }}
-
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
