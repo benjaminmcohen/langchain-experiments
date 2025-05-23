@@ -29,6 +29,7 @@ def draft_email(user_input, name="Dave"):
     
     """
 
+
     signature = f"Kind regards, \n{name}"
     system_message_prompt = SystemMessagePromptTemplate.from_template(template)
 
@@ -38,6 +39,7 @@ def draft_email(user_input, name="Dave"):
     chat_prompt = ChatPromptTemplate.from_messages(
         [system_message_prompt, human_message_prompt]
     )
+    print("Expected input variables:", chat_prompt.input_variables)
 
     chain = LLMChain(llm=chat, prompt=chat_prompt)
     response = chain.run({"user_input": user_input, "signature": signature, "name": name})
