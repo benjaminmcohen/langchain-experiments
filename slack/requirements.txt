@@ -7,3 +7,4 @@ slack-bolt
 Flask
 gunicorn
 urllib3<2
+langchain-openai>=0.0.1
