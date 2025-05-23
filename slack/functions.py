@@ -1,8 +1,9 @@
 from langchain_openai import AzureChatOpenAI
 from dotenv import find_dotenv, load_dotenv
 import os
+import logging
 
-print("✅ dotenv loaded")
+#print("✅ dotenv loaded")
 from langchain.chains.llm import LLMChain
 from langchain_core.prompts import (
     ChatPromptTemplate,
@@ -11,6 +12,20 @@ from langchain_core.prompts import (
 )
 
 load_dotenv(find_dotenv())
+
+# Configure logging to ensure logs show in Azure App Service
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+# Log endpoint details
+endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
+deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME")
+version = os.getenv("AZURE_OPENAI_API_VERSION")
+model = "gpt-4o-mini"
+
+logging.info(f"Using Azure OpenAI endpoint: {endpoint}")
+logging.info(f"Deployment name: {deployment}, API version: {version}, Model: {model}")
+
+
 
 def draft_email(user_input, name="Dave"):
     chat = AzureChatOpenAI(
@@ -43,7 +58,7 @@ def draft_email(user_input, name="Dave"):
     chat_prompt = ChatPromptTemplate.from_messages(
         [system_message_prompt, human_message_prompt]
     )
-    print("Expected input variables:", chat_prompt.input_variables)
+    logging.info(f"Expected input variables: {chat_prompt.input_variables}")
 
     chain = LLMChain(llm=chat, prompt=chat_prompt)
     response = chain.run({"user_input": user_input, "signature": signature, "name": name})
