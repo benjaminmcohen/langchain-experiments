@@ -29,7 +29,7 @@ def draft_email(user_input, name="Dave"):
     
     """
 
-    signature = f"Kind regards, \n\{name}"
+    signature = f"Kind regards, \n{name}"
     system_message_prompt = SystemMessagePromptTemplate.from_template(template)
 
     human_template = "Here's the email to reply to and consider any other comments from the user for reply as well: {user_input}"
@@ -40,6 +40,6 @@ def draft_email(user_input, name="Dave"):
     )
 
     chain = LLMChain(llm=chat, prompt=chat_prompt)
-    response = chain.run(user_input=user_input, signature=signature, name=name)
+    response = chain.run({"user_input": user_input, "signature": signature, "name": name})
 
     return response
