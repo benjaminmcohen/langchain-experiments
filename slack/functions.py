@@ -15,7 +15,7 @@ load_dotenv(find_dotenv())
 def draft_email(user_input, name="Dave"):
     chat = AzureChatOpenAI(
         openai_api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-        openai_api_base=os.getenv("AZURE_OPENAI_ENDPOINT"),
+        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
         deployment_name=os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME"),
         openai_api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
         model_name="gpt-4o-mini",
