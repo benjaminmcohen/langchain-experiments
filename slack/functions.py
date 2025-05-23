@@ -20,7 +20,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
 deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME")
 version = os.getenv("AZURE_OPENAI_API_VERSION")
-model = "gpt-4o-mini"
+model = "text-embedding-ada-002"
 
 logging.info(f"Using Azure OpenAI endpoint: {endpoint}")
 logging.info(f"Deployment name: {deployment}, API version: {version}, Model: {model}")
